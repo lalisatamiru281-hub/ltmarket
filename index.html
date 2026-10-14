@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F7F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1F1E" media="(prefers-color-scheme: dark)">
+<title>Lt Market Place</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --font:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --bg:#F4F7F6;--surface:#FFFFFF;--ink:#0B2B2A;--muted:#456C69;--line:#D3E1DF;
+  --brand:#0E4B49;--on-brand:#FFFFFF;--accent:#F2A33A;--tint:#E3EFED;--danger:#B3261E;
+  --mark-bg:#0E4B49;--mark-fg:#FFFFFF;--mark-roof:#F2A33A;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --bg:#0A1F1E;--surface:#112F2D;--ink:#EAF3F2;--muted:#9DC2BE;--line:#245250;
+    --brand:#F2A33A;--on-brand:#0B2B2A;--accent:#F2A33A;--tint:#184240;--danger:#FF8A80;
+    --mark-bg:#F2A33A;--mark-fg:#0B2B2A;--mark-roof:#0B2B2A;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);font-size:16px;line-height:1.45;background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.hdr{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px 4px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand svg{flex:none;width:44px;height:44px}
+.mk-bg{fill:var(--mark-bg)}.mk-fg{fill:var(--mark-fg)}.mk-roof{stroke:var(--mark-roof)}
+.brand h1{margin:0;font-size:22px;line-height:1.1;font-weight:700;letter-spacing:-.3px}
+.brand .tag{margin:2px 0 0;font-size:11px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;color:var(--muted)}
+.acct{flex:none;min-height:44px;padding:0 16px;font:inherit;font-weight:600;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.nav{display:flex;gap:8px;overflow-x:auto;padding-block:8px 10px}
+.tab{flex:none;min-height:44px;padding:0 18px;font:inherit;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.tab .count{display:inline-block;min-width:22px;margin-left:8px;padding:0 6px;font-size:13px;line-height:22px;text-align:center;color:var(--on-brand);background:var(--danger);border-radius:999px}
+
+main{padding-block:16px 120px}
+.tools{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.tools input{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.chips{display:flex;gap:8px;overflow-x:auto}
+.chip{flex:none;min-height:40px;padding:0 16px;font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--tint);border-color:var(--brand)}
+.statusrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;font-size:14px;color:var(--muted)}
+.link{min-height:44px;padding:0;font:inherit;font-size:14px;font-weight:600;color:var(--brand);text-decoration:underline;background:none;border:0;cursor:pointer}
+.empty{padding:32px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
+.empty strong{display:block;margin-bottom:4px;font-size:18px;color:var(--ink)}
+.empty .btn{margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px;list-style:none;margin:0;padding:0}
+.card{min-width:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.media{position:relative;height:120px;display:grid;place-items:center;background:var(--tint);color:var(--brand)}
+.media svg{width:60px;height:60px}
+.pill{position:absolute;top:10px;left:10px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px}
+.pill.bad{color:var(--danger)}
+.cbody{display:flex;flex-direction:column;gap:6px;padding:14px}
+.kind{margin:0;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.ctitle{margin:0;font-size:18px;line-height:1.25;font-weight:600;text-wrap:balance;overflow-wrap:anywhere}
+.price{margin:0;font-size:22px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+.where{margin:0;color:var(--muted)}
+.desc{margin:0;font-size:15px;overflow-wrap:anywhere}
+.contact,.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.num{flex-basis:100%;margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;font:inherit;font-weight:600;font-size:15px;color:var(--ink);text-decoration:none;background:transparent;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.btn.primary{color:var(--on-brand);background:var(--brand);border-color:var(--brand)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.remove{align-self:flex-start;min-height:44px;padding:0;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;background:none;border:0;cursor:pointer}
+
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:6;display:inline-flex;align-items:center;gap:8px;min-height:54px;padding:0 22px;font:inherit;font-weight:700;font-size:16px;color:var(--on-brand);background:var(--brand);border:0;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}
+
+.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5)}
+.panel{width:100%;max-width:560px;max-height:94%;overflow:auto;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));background:var(--surface);border-radius:20px 20px 0 0}
+.panel h2{margin:0 0 6px;font-size:22px}
+.panel .sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.field{margin-bottom:14px}
+.field label{display:block;margin-bottom:6px;font-size:14px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.field textarea{min-height:92px;resize:vertical}
+.msg{min-height:22px;margin:0 0 8px;font-size:14px;font-weight:600;color:var(--danger)}
+.msg.ok{color:var(--brand)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.swap{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:6px}
+
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:30;max-width:calc(100% - 32px);padding:12px 18px;font-weight:600;color:var(--bg);background:var(--ink);border-radius:12px;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <svg viewBox="0 0 120 120" role="img" aria-label="Lt Market Place logo">
+          <rect class="mk-bg" width="120" height="120" rx="28"></rect>
+          <path class="mk-roof" d="M24 54 L60 26 L96 54" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path class="mk-fg" d="M34 64 H44 V88 H58 V96 H34 Z"></path>
+          <path class="mk-fg" d="M64 64 H94 V72 H83 V96 H75 V72 H64 Z"></path>
+        </svg>
+        <div>
+          <h1>Lt Market Place</h1>
+          <p class="tag">Houses · Land · Cars</p>
+        </div>
+      </div>
+      <button class="acct" id="acct" type="button">Sign in</button>
+    </div>
+    <div class="nav" role="group" aria-label="Sections">
+      <button class="tab" type="button" data-view="browse" aria-pressed="true">Browse</button>
+      <button class="tab" type="button" data-view="mine" aria-pressed="false">My listings</button>
+      <button class="tab" type="button" data-view="review" aria-pressed="false" id="tabReview" hidden>Approve<span class="count" id="reviewCount" hidden>0</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="v-browse" aria-label="Browse listings">
+    <div class="tools">
+      <label class="sr" for="q">Search listings</label>
+      <input id="q" type="search" placeholder="Search by title, city or details" autocomplete="off">
+      <div class="chips" role="group" aria-label="Category">
+        <button class="chip" type="button" data-cat="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-cat="house" aria-pressed="false">Houses</button>
+        <button class="chip" type="button" data-cat="land" aria-pressed="false">Land</button>
+        <button class="chip" type="button" data-cat="car" aria-pressed="false">Cars</button>
+      </div>
+    </div>
+  </section>
+  <section id="v-mine" aria-label="My listings" hidden></section>
+  <section id="v-review" aria-label="Listings waiting for approval" hidden></section>
+
+  <div class="statusrow">
+    <span id="status" aria-live="polite"></span>
+    <button class="link" id="refresh" type="button">Refresh</button>
+  </div>
+  <div id="empty" class="empty"><strong>Loading listings</strong>One moment.</div>
+  <ul class="grid" id="list" hidden></ul>
+</main>
+
+<button class="fab" id="fab" type="button">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+  Post a listing
+</button>
+
+<!-- Sign in / create account -->
+<div class="sheet" id="authSheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <h2 id="authTitle">Sign in</h2>
+    <p class="sub" id="authSub">Sign in to post listings and see your own.</p>
+    <form id="authForm" novalidate>
+      <div class="field">
+        <label for="a-email">Email</label>
+        <input id="a-email" type="email" inputmode="email" autocomplete="email" autocapitalize="none">
+      </div>
+      <div class="field">
+        <label for="a-pass">Password (at least 8 characters)</label>
+        <input id="a-pass" type="password" autocomplete="current-password">
+      </div>
+      <p class="msg" id="authMsg" role="alert"></p>
+      <div class="actions">
+        <button class="btn" type="button" data-close>Cancel</button>
+        <button class="btn primary" type="submit" id="authGo">Sign in</button>
+      </div>
+      <div class="swap">
+        <button class="link" type="button" id="authSwap">Create an account</button>
+        <button class="link" type="button" id="authForgot">Forgot password?</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Post a listing -->
+<div class="sheet" id="postSheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="postTitle">
+    <h2 id="postTitle">Post a listing</h2>
+    <p class="sub">Lt Market Place checks every listing before it goes live.</p>
+    <form id="postForm" novalidate>
+      <div class="field">
+        <label for="f-type">What are you selling?</label>
+        <select id="f-type">
+          <option value="house">House</option>
+          <option value="land">Land</option>
+          <option value="car">Car</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-title">Title</label>
+        <input id="f-title" type="text" maxlength="80" placeholder="For example: 3-bedroom house with garden" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-price">Price (ETB)</label>
+        <input id="f-price" type="number" inputmode="numeric" min="1" step="1" placeholder="For example: 2500000">
+      </div>
+      <div class="field">
+        <label for="f-city">City</label>
+        <input id="f-city" type="text" maxlength="60" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-desc">Details</label>
+        <textarea id="f-desc" maxlength="400" placeholder="Size, condition, road access, documents"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-phone">Phone number for buyers</label>
+        <input id="f-phone" type="tel" inputmode="tel" maxlength="20" placeholder="09..." autocomplete="tel">
+      </div>
+      <p class="msg" id="postMsg" role="alert"></p>
+      <div class="actions">
+        <button class="btn" type="button" data-close>Cancel</button>
+        <button class="btn primary" type="submit" id="postGo">Send for approval</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Account -->
+<div class="sheet" id="acctSheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="acctTitle">
+    <h2 id="acctTitle">Your account</h2>
+    <p class="sub" id="acctInfo"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Close</button>
+      <button class="btn primary" type="button" id="signOut">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Project connection. Both values are public by design: the security rules in the database protect the data. */
+  var SB_URL = 'https://pszhvbfscdzawawmrkhz.supabase.co';
+  var SB_KEY = 'sb_publishable_7zZopl7L8jBv96bZmIDkaQ_NQCj4MUv';
+
+  var TYPES = { house: 'House', land: 'Land', car: 'Car' };
+  var STATUS = { pending: 'Waiting for approval', approved: 'Live', rejected: 'Not approved' };
+  var ICONS = {
+    house: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v11h14V10"/><path d="M10 21v-7h4v7"/></svg>',
+    land: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 8 6l12 2-2 11z"/><path d="M8 6 6 4M20 8l2-2M18 19l1.5 2M4 18l-1.5 1.5"/></svg>',
+    car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16v-4l2-4h10l3 4h3v4z"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>'
+  };
+  var LS = 'ltm.session';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var session = null, isAdmin = false;
+  var data = { browse: null, mine: null, review: null };
+  var ui = { view: 'browse', cat: 'all', q: '' };
+  var armed = null, toastTimer = null, afterAuth = null, authMode = 'in', openSheetEl = null, lastFocus = null;
+
+  /* ---------- small helpers ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function digits(p) {
+    var d = String(p || '').replace(/\D/g, '');
+    if (d.charAt(0) === '0') d = '251' + d.slice(1);
+    return d;
+  }
+  function pretty(p) {
+    var d = digits(p);
+    if (d.indexOf('251') === 0 && d.length === 12) return '+251 ' + d.slice(3, 6) + ' ' + d.slice(6, 9) + ' ' + d.slice(9);
+    return d ? '+' + d : '';
+  }
+  function money(n) {
+    var x = Number(n);
+    return isFinite(x) ? x.toLocaleString('en-US') + ' ETB' : '';
+  }
+  function toast(text) {
+    var t = $('toast');
+    t.textContent = text;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 3200);
+  }
+  function friendly(e) {
+    var m = String((e && e.message) || '');
+    if (e instanceof TypeError) return 'No internet connection. Try again.';
+    if (/invalid login/i.test(m)) return 'Wrong email or password.';
+    if (/not confirmed/i.test(m)) return 'Confirm your email first. Check your inbox and spam folder.';
+    if (/already registered|already been registered/i.test(m)) return 'This email already has an account. Tap "I have an account".';
+    if (/rate limit|too many/i.test(m)) return 'Too many tries. Wait a few minutes and try again.';
+    if (/password/i.test(m) && /characters|short|weak/i.test(m)) return 'Choose a longer password (at least 8 characters).';
+    return m || 'Something went wrong. Try again.';
+  }
+
+  /* ---------- session ---------- */
+  try { session = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { session = null; }
+  function setSession(d) {
+    if (!d || !d.access_token) {
+      session = null;
+      try { localStorage.removeItem(LS); } catch (e) {}
+      return;
+    }
+    session = {
+      access_token: d.access_token,
+      refresh_token: d.refresh_token,
+      expires_at: d.expires_at || (Date.now() / 1000 + (d.expires_in || 3600)),
+      user: { id: d.user && d.user.id, email: d.user && d.user.email }
+    };
+    try { localStorage.setItem(LS, JSON.stringify(session)); } catch (e) {}
+  }
+
+  /* ---------- network ---------- */
+  async function call(path, opts) {
+    opts = opts || {};
+    var h = { apikey: SB_KEY };
+    if (opts.body !== undefined) h['Content-Type'] = 'application/json';
+    if (opts.prefer) h.Prefer = opts.prefer;
+    if (opts.token) h.Authorization = 'Bearer ' + opts.token;
+    var r = await fetch(SB_URL + path, {
+      method: opts.method || 'GET',
+      headers: h,
+      body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined
+    });
+    var text = await r.text(), out = null;
+    if (text) { try { out = JSON.parse(text); } catch (e) { out = text; } }
+    if (!r.ok) {
+      var err = new Error((out && (out.msg || out.message || out.error_description || out.error)) || ('Request failed (' + r.status + ')'));
+      err.status = r.status;
+      throw err;
+    }
+    return out;
+  }
+  async function fresh() {
+    if (!session) return null;
+    if (session.expires_at - Date.now() / 1000 > 60) return session.access_token;
+    try {
+      var d = await call('/auth/v1/token?grant_type=refresh_token', { method: 'POST', body: { refresh_token: session.refresh_token } });
+      setSession(d);
+    } catch (e) {
+      if (e.status === 400 || e.status === 401 || e.status === 403) setSession(null);
+      else throw e;
+    }
+    return session ? session.access_token : null;
+  }
+  async function api(path, opts) {
+    opts = opts || {};
+    opts.token = await fresh();
+    return call(path, opts);
+  }
+
+  /* ---------- sheets ---------- */
+  function openSheet(id, focusId) {
+    closeSheet(true);
+    lastFocus = document.activeElement;
+    openSheetEl = $(id);
+    openSheetEl.hidden = false;
+    var f = focusId && $(focusId);
+    if (f) f.focus();
+  }
+  function closeSheet(quiet) {
+    if (openSheetEl) { openSheetEl.hidden = true; openSheetEl = null; }
+    if (!quiet && lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.sheet'), function (s) {
+    s.addEventListener('click', function (e) { if (e.target === s) closeSheet(); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
+    b.addEventListener('click', function () { closeSheet(); });
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openSheetEl) closeSheet(); });
+
+  /* ---------- cards ---------- */
+  function twoStep(btn, label, action) {
+    btn.addEventListener('click', function () {
+      if (armed === btn) { armed = null; action(); return; }
+      if (armed) { armed.textContent = armed.getAttribute('data-label'); }
+      armed = btn;
+      btn.textContent = 'Tap again to confirm';
+      setTimeout(function () { if (armed === btn) { btn.textContent = label; armed = null; } }, 3500);
+    });
+    btn.setAttribute('data-label', label);
+  }
+  function copyNumber(numEl, text) {
+    function fallback() {
+      try {
+        var r = document.createRange(); r.selectNodeContents(numEl);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      } catch (e) {}
+      toast('Number selected. Copy it now.');
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast('Number copied'); }, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  }
+  function card(d, mode) {
+    var type = TYPES[d.type] ? d.type : 'house';
+    var li = el('li', 'card');
+    var media = el('div', 'media');
+    media.innerHTML = ICONS[type];
+    if (mode !== 'browse') {
+      var pill = el('span', 'pill' + (d.status === 'rejected' ? ' bad' : ''), STATUS[d.status] || d.status);
+      media.appendChild(pill);
+    }
+    li.appendChild(media);
+
+    var body = el('div', 'cbody');
+    body.appendChild(el('p', 'kind', TYPES[type]));
+    body.appendChild(el('h2', 'ctitle', String(d.title || 'Untitled listing')));
+    body.appendChild(el('p', 'price', money(d.price)));
+    if (d.city) body.appendChild(el('p', 'where', String(d.city)));
+    if (d.description) body.appendChild(el('p', 'desc', String(d.description)));
+
+    var num = digits(d.phone);
+    if (num) {
+      var contact = el('div', 'contact');
+      var shown = el('p', 'num', pretty(d.phone));
+      shown.setAttribute('translate', 'no');
+      contact.appendChild(shown);
+      var wa = el('a', 'btn primary', 'WhatsApp');
+      wa.href = 'https://wa.me/' + num; wa.target = '_blank'; wa.rel = 'noopener noreferrer';
+      contact.appendChild(wa);
+      var call = el('a', 'btn', 'Call');
+      call.href = 'tel:+' + num;
+      contact.appendChild(call);
+      var copy = el('button', 'btn', 'Copy number');
+      copy.type = 'button';
+      copy.addEventListener('click', function () { copyNumber(shown, pretty(d.phone)); });
+      contact.appendChild(copy);
+      body.appendChild(contact);
+    }
+
+    if (mode === 'review') {
+      var acts = el('div', 'acts');
+      var ok = el('button', 'btn primary', 'Approve'); ok.type = 'button';
+      ok.addEventListener('click', function () { setStatus(d.id, 'approved'); });
+      var no = el('button', 'btn', 'Reject'); no.type = 'button';
+      no.addEventListener('click', function () { setStatus(d.id, 'rejected'); });
+      acts.appendChild(ok); acts.appendChild(no);
+      body.appendChild(acts);
+    } else if (mode === 'mine' || (mode === 'browse' && isAdmin)) {
+      var rm = el('button', 'remove', 'Remove listing'); rm.type = 'button';
+      twoStep(rm, 'Remove listing', function () { removeListing(d.id); });
+      body.appendChild(rm);
+    }
+    li.appendChild(body);
+    return li;
+  }
+
+  /* ---------- views ---------- */
+  var VIEW_PATH = {
+    browse: function () { return '/rest/v1/listings?select=*&status=eq.approved&order=created_at.desc&limit=200'; },
+    mine: function () { return '/rest/v1/listings?select=*&user_id=eq.' + encodeURIComponent(session.user.id) + '&order=created_at.desc&limit=200'; },
+    review: function () { return '/rest/v1/listings?select=*&status=eq.pending&order=created_at.asc&limit=200'; }
+  };
+  function setEmpty(title, text, actionLabel, action) {
+    var e = $('empty');
+    e.innerHTML = '';
+    e.appendChild(el('strong', null, title));
+    e.appendChild(document.createTextNode(text));
+    if (actionLabel) {
+      var b = el('button', 'btn primary', actionLabel); b.type = 'button';
+      b.addEventListener('click', action);
+      e.appendChild(b);
+    }
+    e.hidden = false;
+    $('list').hidden = true;
+    $('status').textContent = '';
+  }
+  function render() {
+    var v = ui.view, rows = data[v];
+    if (v === 'mine' && !session) {
+      setEmpty('Sign in to see your listings', 'Your posts and their approval status appear here.', 'Sign in', function () { openAuth('in'); });
+      return;
+    }
+    if (rows === null) { setEmpty('Loading listings', 'One moment.'); return; }
+    if (rows === 'error') { setEmpty('Could not load listings', 'Check your internet connection, then tap Refresh.'); return; }
+    var q = ui.q.trim().toLowerCase();
+    var shown = rows.filter(function (d) {
+      if (v !== 'browse') return true;
+      if (ui.cat !== 'all' && d.type !== ui.cat) return false;
+      if (!q) return true;
+      return [d.title, d.city, d.description].join(' ').toLowerCase().indexOf(q) !== -1;
+    });
+    if (!shown.length) {
+      if (v === 'browse' && rows.length) setEmpty('No listings match', 'Try another search or category.');
+      else if (v === 'browse') setEmpty('No listings yet', 'Be the first. Tap Post a listing to add a house, plot of land or car.');
+      else if (v === 'mine') setEmpty('You have no listings yet', 'Tap Post a listing. We will show its approval status here.');
+      else setEmpty('Nothing to approve', 'New listings waiting for approval will appear here.');
+      return;
+    }
+    var list = $('list');
+    list.innerHTML = '';
+    shown.forEach(function (d) { list.appendChild(card(d, v)); });
+    list.hidden = false;
+    $('empty').hidden = true;
+    $('status').textContent = shown.length + (shown.length === 1 ? ' listing' : ' listings');
+  }
+  async function load(v) {
+    if (v === 'mine' && !session) { render(); return; }
+    if (v === 'review' && !isAdmin) { return; }
+    try {
+      data[v] = await api(VIEW_PATH[v]());
+    } catch (e) {
+      data[v] = 'error';
+      if (e.status === 401) { setSession(null); updateChrome(); }
+    }
+    if (v === 'review') updateCount();
+    if (ui.view === v) render();
+  }
+  function updateCount() {
+    var n = Array.isArray(data.review) ? data.review.length : 0;
+    var c = $('reviewCount');
+    c.textContent = n; c.hidden = n === 0;
+  }
+  function switchView(v) {
+    ui.view = v;
+    ['browse', 'mine', 'review'].forEach(function (name) { $('v-' + name).hidden = name !== v; });
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) {
+      t.setAttribute('aria-pressed', t.getAttribute('data-view') === v ? 'true' : 'false');
+    });
+    render();
+    load(v);
+  }
+  function updateChrome() {
+    var a = $('acct');
+    a.textContent = session ? (session.user.email || 'Account').split('@')[0] : 'Sign in';
+    $('tabReview').hidden = !isAdmin;
+    if (!isAdmin && ui.view === 'review') switchView('browse');
+  }
+
+  /* ---------- actions ---------- */
+  async function setStatus(id, status) {
+    try {
+      await api('/rest/v1/listings?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: { status: status }, prefer: 'return=minimal' });
+      toast(status === 'approved' ? 'Listing approved. It is now live.' : 'Listing rejected');
+      data.browse = null;
+      await load('review');
+    } catch (e) { toast(friendly(e)); }
+  }
+  async function removeListing(id) {
+    try {
+      await api('/rest/v1/listings?id=eq.' + encodeURIComponent(id), { method: 'DELETE', prefer: 'return=minimal' });
+      toast('Listing removed');
+      data.browse = null; data.mine = null;
+      await load(ui.view);
+      if (isAdmin) load('review');
+    } catch (e) { toast(friendly(e)); }
+  }
+  async function checkAdmin() {
+    if (!session) return false;
+    try { return (await api('/rest/v1/rpc/is_admin', { method: 'POST', body: {} })) === true; }
+    catch (e) { return false; }
+  }
+
+  /* ---------- sign in ---------- */
+  function authMsg(text, ok) {
+    var m = $('authMsg');
+    m.textContent = text || '';
+    m.className = 'msg' + (ok ? ' ok' : '');
+  }
+  function setAuthMode(mode) {
+    authMode = mode;
+    var up = mode === 'up';
+    $('authTitle').textContent = up ? 'Create an account' : 'Sign in';
+    $('authSub').textContent = up ? 'We send a link to your email to confirm it.' : 'Sign in to post listings and see your own.';
+    $('authGo').textContent = up ? 'Create account' : 'Sign in';
+    $('authSwap').textContent = up ? 'I have an account' : 'Create an account';
+    $('authForgot').hidden = up;
+    $('a-pass').setAttribute('autocomplete', up ? 'new-password' : 'current-password');
+    authMsg('');
+  }
+  function openAuth(mode, then) {
+    afterAuth = then || null;
+    setAuthMode(mode || 'in');
+    openSheet('authSheet', 'a-email');
+  }
+  async function afterSignIn() {
+    isAdmin = await checkAdmin();
+    updateChrome();
+    closeSheet(true);
+    toast('Signed in');
+    data.mine = null; data.review = null;
+    load(ui.view);
+    if (isAdmin) load('review');
+    if (afterAuth) { var f = afterAuth; afterAuth = null; f(); }
+  }
+  $('authSwap').addEventListener('click', function () { setAuthMode(authMode === 'in' ? 'up' : 'in'); });
+  $('authForgot').addEventListener('click', async function () {
+    var email = $('a-email').value.trim();
+    if (email.indexOf('@') < 1) { authMsg('Type your email above first.'); return; }
+    try {
+      await call('/auth/v1/recover', { method: 'POST', body: { email: email } });
+      authMsg('If this email has an account, we sent a link to reset the password.', true);
+    } catch (e) { authMsg(friendly(e)); }
+  });
+  $('authForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var email = $('a-email').value.trim(), pw = $('a-pass').value;
+    if (email.indexOf('@') < 1) { authMsg('Enter a valid email address.'); return; }
+    if (pw.length < 8) { authMsg('Password must have at least 8 characters.'); return; }
+    var go = $('authGo');
+    go.disabled = true; authMsg('');
+    try {
+      if (authMode === 'in') {
+        setSession(await call('/auth/v1/token?grant_type=password', { method: 'POST', body: { email: email, password: pw } }));
+        await afterSignIn();
+      } else {
+        var d = await call('/auth/v1/signup', { method: 'POST', body: { email: email, password: pw } });
+        if (d && d.access_token) { setSession(d); await afterSignIn(); }
+        else {
+          setAuthMode('in');
+          authMsg('We sent a confirmation link to ' + email + '. Open it, then come back and sign in. Check spam too.', true);
+        }
+      }
+    } catch (ex) { authMsg(friendly(ex)); }
+    go.disabled = false;
+  });
+  $('acct').addEventListener('click', function () {
+    if (!session) { openAuth('in'); return; }
+    $('acctInfo').textContent = (session.user.email || '') + (isAdmin ? ' · Admin' : '');
+    openSheet('acctSheet');
+  });
+  $('signOut').addEventListener('click', async function () {
+    var t = session && session.access_token;
+    setSession(null); isAdmin = false;
+    data.mine = null; data.review = null;
+    closeSheet(true);
+    updateChrome();
+    switchView('browse');
+    toast('Signed out');
+    if (t) { try { await call('/auth/v1/logout', { method: 'POST', token: t }); } catch (e) {} }
+  });
+
+  /* ---------- post a listing ---------- */
+  function validate(d) {
+    if (!TYPES[d.type]) return 'Choose house, land or car.';
+    if (d.title.length < 3) return 'Add a short title (at least 3 letters).';
+    if (!(d.price > 0)) return 'Enter the price in ETB.';
+    if (d.city.length < 2) return 'Add the city.';
+    var n = d.phone.replace(/\D/g, '').length;
+    if (n < 9 || n > 15) return 'Enter a phone number with at least 9 digits.';
+    return '';
+  }
+  function openPost() {
+    if (!session) { openAuth('in', openPost); return; }
+    $('postMsg').textContent = '';
+    openSheet('postSheet', 'f-type');
+  }
+  $('fab').addEventListener('click', openPost);
+  $('postForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var d = {
+      type: $('f-type').value,
+      title: $('f-title').value.trim(),
+      price: Number($('f-price').value),
+      city: $('f-city').value.trim(),
+      description: $('f-desc').value.trim(),
+      phone: $('f-phone').value.trim()
+    };
+    var err = validate(d);
+    if (err) { $('postMsg').textContent = err; return; }
+    var go = $('postGo');
+    go.disabled = true; $('postMsg').textContent = '';
+    try {
+      await api('/rest/v1/listings', { method: 'POST', body: d, prefer: 'return=minimal' });
+      $('postForm').reset();
+      closeSheet(true);
+      toast('Sent. It goes live after approval.');
+      data.mine = null;
+      switchView('mine');
+      if (isAdmin) load('review');
+    } catch (ex) {
+      $('postMsg').textContent = friendly(ex);
+    }
+    go.disabled = false;
+  });
+
+  /* ---------- wiring ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) {
+    t.addEventListener('click', function () { switchView(t.getAttribute('data-view')); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (c) {
+    c.addEventListener('click', function () {
+      ui.cat = c.getAttribute('data-cat');
+      Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (x) {
+        x.setAttribute('aria-pressed', x === c ? 'true' : 'false');
+      });
+      render();
+    });
+  });
+  $('q').addEventListener('input', function () { ui.q = $('q').value; render(); });
+  $('refresh').addEventListener('click', function () { data[ui.view] = null; render(); load(ui.view); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) load(ui.view); });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+
+  /* ---------- start ---------- */
+  updateChrome();
+  render();
+  load('browse');
+  if (session) {
+    checkAdmin().then(function (a) {
+      isAdmin = a;
+      updateChrome();
+      if (a) load('review');
+    });
+  }
+})();
+</script>
+</body>
+</html>
